@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Bem-vindo, <%= username %>!</h1>
+  <p>Seu saldo atual: <strong>$<%= balance %></strong></p>
+
+  <!-- Formulário para envio de mensagens -->
+  <h2>Enviar Mensagem</h2>
+  <form action="/messages/send" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="recipient">Destinatário:</label>
+    <select name="recipient" id="recipient" required>
+      <option value="" disabled selected>Escolha o destinatário</option>
+      <option value="user1">User1</option>
+      <option value="user2">User2</option>
+    </select>
+    <br>
+    <label for="message">Mensagem:</label>
+    <textarea name="message" id="message" rows="4" required></textarea>
+    <br>
+    <button type="submit">Enviar</button>
+  </form>
+
+ 
+  <h2>Mensagens Recebidas</h2>
+  <ul id="messages">
+    <% messages.forEach(msg => { %>
+      <li>
+        <strong>De:</strong> <%= msg.sender %> <br>
+        <strong>Mensagem:</strong> <%= msg.message %> <br>
+        <em><%= new Date(msg.timestamp).toLocaleString() %></em>
+      </li>
+    <% }); %>
+  </ul>
+
+  <a href="/logout">Logout</a>
+</body>
+</html>
