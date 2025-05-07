@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Messaging App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    #messages {
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .message strong {
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <h1>Secure Messaging</h1>
+  <form id="messageForm">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="message">Message:</label>
+    <textarea name="message" id="message" placeholder="Type your message here..." required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+
+  <h2>Messages</h2>
+  <div id="messages">
+    <% messages.forEach(function(msg) { %>
+      <div class="message">
+        <strong><%= msg.sender %>:</strong> <%= msg.content %>
+      </div>
+    <% }); %>
+  </div>
+
+  <script>
+    document.getElementById('messageForm').addEventListener('submit', async function (event) {
+      event.preventDefault(); // Impede o comportamento padrão do formulário
+
+      const messageInput = document.getElementById('message');
+      const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+      try {
+        const response = await fetch('/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({ message: messageInput.value })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          const messagesDiv = document.getElementById('messages');
+          messagesDiv.innerHTML += `
+            <div class="message">
+              <strong>Original Message:</strong> ${result.originalMessage}<br>
+              <strong>Encrypted Message:</strong> ${result.encryptedMessage}<br>
+              <strong>Decrypted Message:</strong> ${result.decryptedMessage}<br>
+            </div>
+          `;
+          messageInput.value = ''; // Limpa o campo de entrada
+        } else {
+          throw new Error('Failed to send message.');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
